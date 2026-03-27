@@ -298,6 +298,13 @@ This document is the master rulebook bundled with the `software-project-manageme
 - Failure prevented: gaps caused by overreliance on one test type
 - Source anchors: [S04] [S11]
 
+### R34A - Define the verification ladder and evidence pack before implementation
+- Applies to: solo operator, feedback-heavy, external-constraint, release-safety, agentic
+- Required artifacts: verification ladder, exact commands or checks, evidence capture plan
+- Why it matters: if the agent cannot prove the change works, it will guess.
+- Failure prevented: false-positive completion, weak handoffs, and "works for me" claims without evidence
+- Source anchors: [S22]
+
 ### R35 - Treat non-functional requirements as acceptance or release criteria
 - Applies to: solo operator, feedback-heavy, external-constraint, release-safety, agentic
 - Required artifacts: NFR list, thresholds, validation method
@@ -397,6 +404,13 @@ This document is the master rulebook bundled with the `software-project-manageme
 - Failure prevented: plausible-looking but unverifiable work and long opaque runs
 - Source anchors: [S15]
 
+### R47A - Use a fresh-context review pass for risky or cross-cutting changes
+- Applies to: agentic, solo operator
+- Required artifacts: review checklist or prompt, review findings, resolution note
+- Why it matters: the context that wrote the change is biased toward its own plan; a second pass catches blind spots.
+- Failure prevented: missed edge cases, security issues, regression holes, and maintainability surprises
+- Source anchors: [S20] [S22]
+
 ### R48 - Route work to the smallest agent type that can do it reliably
 - Applies to: agentic, solo operator
 - Required artifacts: routing rule, stronger-agent trigger, cost note when relevant
@@ -439,6 +453,13 @@ This document is the master rulebook bundled with the `software-project-manageme
 - Failure prevented: style drift, boundary erosion, inconsistent outputs
 - Source anchors: [S16]
 
+### R53A - Encode zero-exception quality checks in deterministic guardrails when possible
+- Applies to: agentic, solo operator
+- Required artifacts: hook or validator configuration, blocking rules, scope note
+- Why it matters: advice drifts; deterministic enforcement keeps quality checks happening across sessions and contributors.
+- Failure prevented: skipped validation steps, forbidden edits, and policy drift under time pressure
+- Source anchors: [S21] [S22] [S23]
+
 ### R54 - Use vendor-neutral handoff artifacts for cross-session interoperability
 - Applies to: agentic, solo operator
 - Required artifacts: task brief, current task ID, current-state summary, exact file list, commands run, expected next action
@@ -475,6 +496,13 @@ This document is the master rulebook bundled with the `software-project-manageme
 - Why it matters: in solo operator projects the real critical path is often what the operator must still inspect or approve manually.
 - Failure prevented: hidden review bottlenecks
 - Source anchors: [S13] [S14] [S16]
+
+### R58A - Pilot large automated changes on a narrow slice before scaling out
+- Applies to: agentic, solo operator
+- Required artifacts: pilot slice, scale-out trigger, stop trigger, refinement note
+- Why it matters: large unattended changes multiply prompt mistakes, environment gaps, and policy omissions.
+- Failure prevented: repo-wide low-quality churn and hard-to-undo mass edits
+- Source anchors: [S22]
 
 ## Appendix A - Artifact Checklist
 
@@ -528,9 +556,9 @@ This document is the master rulebook bundled with the `software-project-manageme
 | How to control progress | R28-R32 |
 | How to estimate risks | R06, R29-R30 |
 | How to mitigate risks | R29-R32 |
-| How to control quality | R33-R36 |
+| How to control quality | R33-R36, R34A, R47A |
 | How to address scope changes | R32 |
-| What processes ensure project success | R01-R15, R28-R32, R47 |
+| What processes ensure project success | R01-R15, R28-R32, R47-R47A |
 | How to include learning loops for process improvement | R31, R39, R43, R51 |
 | How to include feedback loops to refine scope | R31-R32, R38-R39 |
 | How to include user testing to improve quality | R37 |
@@ -541,13 +569,13 @@ This document is the master rulebook bundled with the `software-project-manageme
 | How to store tasks outside context windows | R44-R45 |
 | How to ensure interoperability across sessions | R26, R44, R54-R55 |
 | How to route work efficiently | R48, R57 |
-| How to include tests in tasks | R18, R33-R35, R47, R52 |
+| How to include tests in tasks | R18, R33-R35, R34A, R47, R52 |
 | How to include learning loops in agent work | R51-R52, R57-R58 |
 | How to help agents understand codebases | R45-R46, R53 |
 | How to manage context windows | R03, R40, R44-R46, R49 |
 | How and when to use subagents | R49 |
 | How to prepare work for autonomous agents | R44-R50 |
-| How to optimize processes | R31, R51-R53, R58 |
-| How to set guardrails | R50, R53-R55 |
+| How to optimize processes | R31, R51-R53A, R58-R58A |
+| How to set guardrails | R50, R53-R55, R53A |
 | What else was missed | R06, R12, R35-R36, R42-R43, R56-R58 |
-| Latest AI coding-space good practices | R48-R58 |
+| Latest AI coding-space good practices | R48-R58A |

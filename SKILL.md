@@ -7,13 +7,13 @@ description: Structure software projects run by a single human operator using Cl
 
 ## Overview
 
-Use this skill to turn vague AI-assisted delivery work into a controlled execution system for one human operator. Default to objective, scope, small executable tasks with stable IDs, acceptance, dependency sequencing, durable files, tests or evals, risk or change logs, and permissions. Add deadline, approval, vendor, budget, or release-window controls only when the project actually has those external constraints.
+Use this skill to turn vague AI-assisted delivery work into a controlled execution system for one human operator. Default to objective, scope, small executable tasks with stable IDs, acceptance, dependency sequencing, durable files, tests or evals, quality evidence, risk or change logs, and permissions. Add deadline, approval, vendor, budget, or release-window controls only when the project actually has those external constraints.
 
 ## Quick Start
 
 1. Inspect the workspace for existing project artifacts before inventing new ones.
 2. Classify the work as `solo operator default` or `external-constraint branch`.
-3. Create or repair the minimum control system: operator objective, scope, small executable tasks, acceptance, work plan, dependency sequence, risk or change controls, documentation, and guardrails.
+3. Create or repair the minimum control system: operator objective, scope, small executable tasks, acceptance, verification ladder, work plan, dependency sequence, risk or change controls, documentation, and guardrails.
 4. Produce the lightest artifact set that preserves continuity across sessions and agent runs.
 
 ## Workflow
@@ -41,6 +41,7 @@ Always maintain these artifacts in some form:
 - scoped work breakdown or backlog
 - small task queue with stable task IDs for the next executable units
 - acceptance and quality criteria
+- verification ladder and evidence path for each nontrivial task
 - dependency map or dependency sequence
 - durable execution plan or current-state note
 - risk, issue, and change controls
@@ -50,7 +51,8 @@ Always maintain these artifacts in some form:
 Add these artifacts when needed:
 - External constraints: deadline or gate log, minimal critical-path view, vendor or approval dependency list, quota or spend tracker
 - Feedback-heavy: research questions, findings log, scope-update loop
-- Agent-assisted: CLAUDE.md entry point, agent or task routing, evals, and explicit escalation rules
+- Agent-assisted: CLAUDE.md entry point, agent or task routing, evals, explicit escalation rules, and deterministic hooks or validators for must-always-pass checks
+- Quality-heavy: invariants list, review checklist, manual-check procedure, and change budget for risky work
 - Release safety: release checklist, rollback plan, monitoring checks, operating notes or runbook
 
 ### Size the Execution Units
@@ -74,6 +76,17 @@ Add these artifacts when needed:
 - Treat scope change as a trade-off decision, not as a free addition.
 - Govern by evidence and explicit triggers. Do not introduce recurring rituals unless they improve control for this specific project.
 
+### Run a Quality-First Delivery Loop
+
+- Before implementation, define the smallest credible proof that the change is correct: failing repro, automated test, expected output, screenshot check, contract check, or exact manual procedure.
+- Use the default sequence `explore -> plan -> implement -> verify -> review -> document`.
+- Record evidence, not just conclusions: commands run, outputs, screenshots, metrics, and review notes tied to the task ID.
+- Preserve explicit invariants and change budgets for every risky task: file scope, public interfaces that must stay stable, data or migration safety, and rollback or escalation triggers.
+- When automated tests are missing, create the fastest credible verification method instead of skipping validation.
+- Require a fresh-context review pass for risky, cross-cutting, or high-impact changes. Use a dedicated review step or review agent with a bug, regression, security, and maintainability lens.
+- Pilot large automated or repetitive changes on a narrow slice before scaling across the codebase.
+- If the same failure repeats twice, stop, strengthen the docs, rules, or validators, and restart with cleaner context instead of stacking corrections.
+
 ### Control Quality, Value, and Learning
 
 - Separate user testing for product quality from user research for product value.
@@ -85,8 +98,11 @@ Add these artifacts when needed:
 
 - Keep durable task state in files, not only in chat.
 - Keep CLAUDE.md entry-point instructions short and navigational.
+- Layer instructions close to the code with short `CLAUDE.md` files and linked deeper references rather than one large root manual.
 - Use vendor-neutral handoff artifacts so different sessions can continue work safely.
 - Use subagents only for bounded parallel work or high-volume output.
+- Prefer deterministic hooks or validators for zero-exception checks such as required lint or test commands, path restrictions, and secret scanning.
+- Use an independent review step or review-focused subagent when the implementation context is likely to be biased toward its own plan.
 - Enforce least privilege, secret-handling rules, trust boundaries, and explicit operator approval for risky actions.
 - Revalidate prompts and workflows with evals when behavior or tooling changes.
 
@@ -99,13 +115,15 @@ Add these artifacts when needed:
 - dependency and sequencing analysis
 - risk, quality, and release-control plan
 - agentic execution and guardrail plan
+- verification matrix and evidence pack
+- review checklist or review prompt for risky work
 - external-constraint addendum, only when deadlines, approvals, vendors, or launch windows matter
 
 ## Reference Files
 
 - Read [references/project-rulebook.md](./references/project-rulebook.md) for the full rule system and coverage map.
 - Read [references/external-constraints.md](./references/external-constraints.md) only when the project has fixed deadlines, approval gates, vendor dependencies, quota caps, launch windows, or production release risk.
-- Read [references/ai-agent-practices.md](./references/ai-agent-practices.md) when planning file-backed memory, subagents, evals, and guardrails.
+- Read [references/ai-agent-practices.md](./references/ai-agent-practices.md) when planning file-backed memory, subagents, evals, quality loops, and guardrails.
 - Read [references/source-anchors.md](./references/source-anchors.md) when you need provenance, volatile vendor anchors, or a refresh point for unstable topics.
 - Do not load every reference by default. Read the smallest relevant file first.
 
@@ -116,8 +134,11 @@ Add these artifacts when needed:
 - Make assumptions explicit whenever the workspace does not contain enough project context.
 - Distinguish stable control practices from volatile vendor recommendations.
 - Prefer task queues over milestone-only plans.
-- Default task format: `Task ID`, `Task`, `Scope`, `Depends on`, `Done when`, and `Stop after`.
+- Default task format: `Task ID`, `Task`, `Scope`, `Depends on`, `Done when`, `Verify with`, `Evidence`, and `Stop after`.
 - When reporting progress or selecting next work, reference the task ID first.
 - When in doubt, split work into smaller tasks before execution.
+- Default quality package: invariants to preserve, exact verification steps, evidence to capture, review focus, and rollback trigger when relevant.
+- Prefer one reviewable diff per execution task.
+- For large automated changes, require a pilot slice before full rollout.
 - Do not introduce date plans, budget tracking, approval workflows, recurring cadences, or stage gates unless the project genuinely depends on them.
 - If the user asks for the latest model, benchmark, or vendor workflow guidance, verify it externally before answering because the bundled source anchors are point-in-time snapshots.

@@ -1,6 +1,6 @@
 # Source Log
 
-Access date for all entries: `2026-03-22`
+Access date for all entries: `2026-03-27`
 
 This log records the primary sources used to build the `software-project-management-for-claude` skill. Source IDs are referenced from the bundled note files and the master rulebook.
 
@@ -159,6 +159,20 @@ This log records the primary sources used to build the `software-project-managem
 - Why trusted: Official docs on guardrails and permission mediation.
 - Questions answered: Permission interception, policy hooks, allow/deny flows, tool restrictions, runtime guardrails, pre- and post-tool-use events.
 - Notes on paywall or uncertainty: Public docs. Implementation is product-specific; the least-privilege principle is general.
+
+### S22 - Anthropic Best Practices for Claude Code
+- Type: Official product docs
+- URL: <https://code.claude.com/docs/en/best-practices>
+- Why trusted: Official Anthropic guidance for effective Claude Code usage.
+- Questions answered: Verification-first prompting, explore-plan-code sequencing, concise CLAUDE.md design, context resets, reviewer patterns, and scale-out practices.
+- Notes on paywall or uncertainty: Public docs. Workflows and command names may evolve.
+
+### S23 - Anthropic Claude Code Security
+- Type: Official product docs
+- URL: <https://code.claude.com/docs/en/security>
+- Why trusted: Official Anthropic security guidance for Claude Code.
+- Questions answered: Prompt-injection protections, permission boundaries, trusted-context assumptions, and safe handling of external content.
+- Notes on paywall or uncertainty: Public docs. Security features and defaults may change over time.
 
 ## Source Prioritization Rule
 - Official framework owners and official vendor docs were used first.

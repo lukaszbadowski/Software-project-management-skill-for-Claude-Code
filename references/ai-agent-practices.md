@@ -12,11 +12,14 @@ This document synthesizes recent practices for running software delivery with Cl
 - Interoperability Across Sessions
 - Routing Work Efficiently
 - Including Tests and Evals in Tasks
+- Quality-First Execution Loop
 - Learning Loops
+- Independent Review and Fresh-Context Validation
 - Managing Context Windows
 - How and When to Use Subagents
 - Preparing Work for Autonomous Agent Execution
 - Process Optimization
+- Scaling Large Refactors and Migrations
 - Guardrails
 - Recent Shifts
 - Unknown Unknowns to Watch
@@ -49,6 +52,7 @@ This document synthesizes recent practices for running software delivery with Cl
   - risk and debt trackers
 - Short entry points beat giant instruction manuals. Anthropic recommends a concise CLAUDE.md with more detailed topic files behind it. Large memory files reduce adherence. [S19]
 - Claude Code also has a persistent file-based memory system in `~/.claude/projects/`. Use it for cross-session user preferences and project context, but keep execution state in repo files for portability. [S19]
+- Current Claude guidance also reinforces layering short `CLAUDE.md` files close to the relevant code rather than growing one giant root file. [S16] [S22]
 
 ## Task Storage Outside the Context Window
 - Long-horizon tasks should have an explicit plan file, not only a chat history.
@@ -153,12 +157,29 @@ This document synthesizes recent practices for running software delivery with Cl
   - exact commands to run
   - expected success condition
   - expected failure modes or regressions to avoid
+- Prefer to define the verification artifact before implementation begins: failing repro, automated test, expected output, screenshot check, contract check, or exact manual procedure. Current Claude guidance emphasizes that the model performs best when it can verify its own work. [S22]
+- Evidence should travel with the task: commands run, outputs, screenshots, metrics, and review notes. Assertions without evidence do not survive handoffs well. [S15] [S22]
 - Evals are especially relevant when:
   - prompts change
   - tools change
   - hook configurations change
   - CLAUDE.md rules change
 - Evals are the behavioral regression suite for the agent workflow itself. [S13] [S14]
+
+## Quality-First Execution Loop
+- The safest default loop is:
+  - explore
+  - plan
+  - implement
+  - verify
+  - review
+  - document
+- Verification should cover invariants and non-goals, not only the happy path.
+- Every substantial task should also declare a change budget:
+  - files or modules allowed to change
+  - public interfaces that must stay stable
+  - migration, rollout, or rollback trigger when relevant
+- If automated tests do not exist yet, create the fastest credible check instead of skipping validation entirely. [S22]
 
 ## Learning Loops
 - There are three learning loops in an agentic system:
@@ -167,6 +188,11 @@ This document synthesizes recent practices for running software delivery with Cl
   - system loop: revise the environment so the next run is easier and safer
 - Failures should be framed as missing capability or missing legibility in the environment rather than "the model should just try harder".
 - DORA's AI capability framing reinforces the same point: improvement comes from strengthening the system around the tool. [S13] [S14]
+
+## Independent Review and Fresh-Context Validation
+- Fresh context catches blind spots that the implementation context tends to normalize.
+- Anthropic now explicitly recommends using separate writer and reviewer sessions for difficult work; the same pattern also helps with bugs, regressions, security checks, and test-gap review.
+- This review may be a second session or a subagent, but it should not assume the implementation path was correct. [S20] [S22]
 
 ## Managing Context Windows
 - Keep the startup context small and stable.
@@ -222,6 +248,12 @@ This document synthesizes recent practices for running software delivery with Cl
   - Claude Code hooks for automated pre/post-action checks
 - The general pattern is to encode taste and policy into tools and files so the operator does not have to restate them every run. [S16] [S21]
 
+## Scaling Large Refactors and Migrations
+- For large repetitive changes, pilot on a narrow slice first: one subsystem, a few files, or one representative path.
+- Use the pilot to refine prompts, hooks, and acceptance checks before scaling out.
+- Large unattended changes should also have explicit stop triggers and allowed-scope rules so the run halts when reality diverges from the plan.
+- Anthropic's current best-practice guidance also recommends clearing context between distinct tasks or after messy correction loops; when the same correction is needed twice, stop and improve the environment or instructions before continuing. [S22]
+
 ## Guardrails
 - Good guardrails combine:
   - Claude Code's permission modes (allowedTools, blockedTools)
@@ -240,6 +272,7 @@ This document synthesizes recent practices for running software delivery with Cl
   - external content that may contain prompt injection or malicious instructions
   - generated artifacts that require operator signoff before execution or release
 - In practice this means the agent should not treat fetched text, issue content, or generated code as automatically trustworthy input for privileged actions. [S16] [S21]
+- Prefer deterministic hooks or validators for zero-exception checks such as required lint or test commands, forbidden path edits, and secret scanning. Advice in a prompt is weaker than a rule the environment actually enforces. [S21] [S22] [S23]
 
 ## Recent Shifts
 - AI-assisted delivery has become more obviously multi-agent and long-horizon. [S16] [S20]
