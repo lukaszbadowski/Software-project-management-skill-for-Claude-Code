@@ -11,6 +11,7 @@ Use this skill to help Claude Code:
 - rescue a drifting project that has become hard to resume or review
 - turn a rough idea into a file-backed execution system
 - break large work into small reviewable tasks with stable task IDs
+- keep the main thread in a director role that delegates bounded work and reviews evidence
 - make progress survive context resets and interrupted sessions
 - add tests, evals, risks, and change control without over-managing the project
 - handle real-world constraints like deadlines, approvals, vendor dependencies, quotas, and release risk only when they actually exist
@@ -50,6 +51,9 @@ This skill gives Claude Code a practical control model:
 
 The default stance is simple:
 
+- keep the main thread focused on direction, synthesis, and sign-off
+- delegate autonomy-ready work when that keeps the main context cleaner
+- require delegated work to return evidence, not just conclusions
 - use the lightest control system that still keeps the project resumable, reviewable, and safe
 - keep durable state in files, not only in conversation history
 - prefer task queues over milestone-only plans
@@ -155,6 +159,7 @@ Once installed, Claude Code can use the skill when the request matches the skill
 
 - Default to solo-operator control, not team ceremony.
 - Prefer reviewable tasks over heroic long runs.
+- Keep the parent thread as a director, not a dump for noisy intermediate work.
 - Keep project truth in files.
 - Separate stable delivery practices from volatile vendor advice.
 - Add complexity only when an actual constraint justifies it.

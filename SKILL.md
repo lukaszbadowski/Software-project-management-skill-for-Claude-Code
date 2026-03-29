@@ -1,6 +1,6 @@
 ---
 name: software-project-management-for-claude
-description: Structure software projects run by a single human operator using Claude Code with agents or subagents. Use when Claude Code needs to plan, rescue, or govern solo operator delivery with clear scope, small reviewable tasks, durable files, dependency sequencing, tests or evals, change control, and guardrails, while adding deadline or release controls only when real external constraints exist.
+description: Structure software projects run by a single human operator using Claude Code with agents or subagents. Use when Claude Code needs to plan, rescue, or govern solo operator delivery with clear scope, director-first delegation, small reviewable tasks, durable files, dependency sequencing, tests or evals, change control, and guardrails, while adding deadline or release controls only when real external constraints exist.
 ---
 
 # Software Project Management
@@ -80,6 +80,7 @@ Add these artifacts when needed:
 
 - Before implementation, define the smallest credible proof that the change is correct: failing repro, automated test, expected output, screenshot check, contract check, or exact manual procedure.
 - Use the default sequence `explore -> plan -> implement -> verify -> review -> document`.
+- When delegation is available and the task is autonomy-ready, keep the main thread in a director role: frame the brief, delegate bounded execution, require verification evidence, then synthesize and sign off.
 - Record evidence, not just conclusions: commands run, outputs, screenshots, metrics, and review notes tied to the task ID.
 - Preserve explicit invariants and change budgets for every risky task: file scope, public interfaces that must stay stable, data or migration safety, and rollback or escalation triggers.
 - When automated tests are missing, create the fastest credible verification method instead of skipping validation.
@@ -97,10 +98,14 @@ Add these artifacts when needed:
 ### Extend the System for Agent-Assisted Delivery
 
 - Keep durable task state in files, not only in chat.
+- Keep the main thread focused on goals, decomposition, synthesis, and sign-off rather than noisy execution details.
 - Keep CLAUDE.md entry-point instructions short and navigational.
 - Layer instructions close to the code with short `CLAUDE.md` files and linked deeper references rather than one large root manual.
 - Use vendor-neutral handoff artifacts so different sessions can continue work safely.
-- Use subagents only for bounded parallel work or high-volume output.
+- Prefer subagents when a task is autonomy-ready and can return a concise summary with evidence. This is especially useful for high-volume, parallel, read-heavy, or verification-heavy work.
+- Give every delegated task a written brief: task ID, objective, scope, constraints, verification commands, expected evidence, stop point, and escalation trigger.
+- Let delegated agents run the smallest relevant checks and return evidence summaries instead of flooding the main thread with raw logs.
+- Keep tiny, tightly coupled, or heavily interactive tasks in the main thread when delegation overhead would outweigh the context savings.
 - Prefer deterministic hooks or validators for zero-exception checks such as required lint or test commands, path restrictions, and secret scanning.
 - Use an independent review step or review-focused subagent when the implementation context is likely to be biased toward its own plan.
 - Enforce least privilege, secret-handling rules, trust boundaries, and explicit operator approval for risky actions.

@@ -418,12 +418,12 @@ This document is the master rulebook bundled with the `software-project-manageme
 - Failure prevented: waste and unnecessary latency
 - Source anchors: [S17] [S18]
 
-### R49 - Use subagents for bounded parallel work or high-volume output
+### R49 - Prefer subagents for autonomy-ready bounded work that protects main context
 - Applies to: agentic, solo operator
-- Required artifacts: scoped subtask brief, expected output, tool limits
-- Why it matters: subagents protect the main context and increase throughput when work is decomposed cleanly.
-- Failure prevented: context pollution and duplicated analysis
-- Source anchors: [S20]
+- Required artifacts: scoped subtask brief, expected output, verification command, expected evidence, tool limits
+- Why it matters: the main thread should preserve context for requirements, decomposition, synthesis, and sign-off while delegated agents handle noisy bounded execution.
+- Failure prevented: context pollution, duplicated analysis, and main-thread drift into low-signal execution detail
+- Source anchors: [S20] [S22]
 
 ### R50 - Enforce least privilege and explicit operator approval paths
 - Applies to: agentic, solo operator

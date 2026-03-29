@@ -38,6 +38,7 @@ This document synthesizes recent practices for running software delivery with Cl
   - Claude Code agents perform bounded analysis and execution
   - files, tests, and tools hold the durable state
   - evals and guardrails keep behavior inside acceptable bounds
+- In practice the main thread should act like a director: define the next bounded brief, route work to the smallest reliable worker or reviewer, collect evidence, and decide sign-off. The noisy execution details should stay in worker contexts whenever possible. [S20] [S22]
 
 ## Files as Durable Memory
 - The repository should be treated as the system of record for what the agent can actually know.
@@ -210,6 +211,7 @@ This document synthesizes recent practices for running software delivery with Cl
   - work can happen in parallel
   - a subtask is well-scoped and bounded
   - the main thread should preserve context for synthesis
+- Default bias: if delegation is available and a task is autonomy-ready, prefer a subagent so the main thread preserves context for coordination and synthesis.
 - Claude Code's Agent tool supports specialized subagent types:
   - `Explore`: fast codebase exploration, file search, keyword search
   - `Plan`: architecture and implementation planning
@@ -222,6 +224,9 @@ This document synthesizes recent practices for running software delivery with Cl
   - log analysis
   - independent review passes
   - specialized task slices with separate scope
+- Delegate with a brief that specifies outcome, scope, constraints, tools, verification commands, expected evidence, and stop point.
+- Ask the subagent to return a concise summary, evidence, and unresolved questions instead of raw intermediate output.
+- Keep work in the main thread when it is tiny, tightly coupled, or requires rapid back-and-forth across planning, implementation, and testing. [S20] [S22]
 - Do not use subagents for vague "go think about everything" delegation. Give one job, clear outputs, and minimal required tools.
 
 ## Preparing Work for Autonomous Agent Execution
@@ -231,10 +236,13 @@ This document synthesizes recent practices for running software delivery with Cl
   - constraints and non-goals
   - files or modules in scope
   - acceptance tests
+  - verification commands
+  - expected evidence
   - environment commands
   - explicit stop condition
   - escalation conditions
   - guardrails for risky actions
+- This is the minimum delegation brief for a director-style workflow: the parent sets the job, the worker executes and verifies, and the parent reviews and decides the next move. [S20] [S22]
 - If any of those are missing, the agent will substitute guesses. That may be acceptable for low-risk tasks but becomes dangerous for large or cross-cutting work. [S15] [S16]
 
 ## Process Optimization
