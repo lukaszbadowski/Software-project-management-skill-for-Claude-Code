@@ -8,22 +8,24 @@ This skill helps turn vague "just build it" work into a controlled delivery syst
 
 Use this skill to help Claude Code:
 
+- co-create the project breakdown with the operator through explicit approval checkpoints (frame, breakdown, queue, final acceptance) instead of assuming a plan on their behalf
 - rescue a drifting project that has become hard to resume or review
-- turn a rough idea into a file-backed execution system
-- break large work into small reviewable tasks with stable task IDs
+- turn a rough idea into a file-backed execution system with a fixed, four-file `pm/` layout
+- break approved stories into small reviewable tasks with stable task IDs
+- route each task to the cheapest model tier that can do it reliably, keeping capable models for planning, review, and orchestration
 - keep the main thread in a director role that delegates bounded work and reviews evidence
-- make progress survive context resets and interrupted sessions
+- make progress survive context resets, interrupted sessions, and switches between Claude Code and Codex
+- trace every success criterion to stories, tasks, and evidence, and close only after end-to-end re-verification
 - add tests, evals, risks, and change control without over-managing the project
 - handle real-world constraints like deadlines, approvals, vendor dependencies, quotas, and release risk only when they actually exist
-- run solo-operator delivery with subagents without losing control
 
 Typical outcomes include:
 
-- a concise project brief with scope, assumptions, and success criteria
-- an ordered task queue with stable task IDs
-- clear "done when" checks for each task
+- `pm/PLAN.md`, `pm/TASKS.md`, `pm/STATE.md`, `pm/DECISIONS.md` — the durable control surface of the project
+- an operator-approved story breakdown traced to success criteria
+- an ordered, model-routed task queue with stable task IDs and clear "done when" checks
 - a current-state note that makes handoffs and resumption easy
-- a dependency sequence instead of vague urgency
+- a final acceptance report proving each success criterion end-to-end
 - release or rollback notes when software is actually going to ship
 
 ## Who This Is For
@@ -44,20 +46,21 @@ Most AI-assisted software projects do not fail because the model cannot write co
 This skill gives Claude Code a practical control model:
 
 1. Inspect the workspace before inventing process.
-2. Extract the real objective, constraints, and success bar.
-3. Build the smallest artifact set that preserves continuity.
-4. Execute through small bounded tasks, not milestone-sized blobs.
-5. Add stronger controls only when the project has a real reason for them.
+2. Elicit the real objective, constraints, and success bar from the operator at Checkpoint CP1.
+3. Get conscious operator approval of the story breakdown (CP2) and task queue (CP3) before executing.
+4. Execute through small bounded tasks in the four `pm/` files, routed to the cheapest reliable model tier.
+5. Close only at Checkpoint CP4, when every success criterion is re-verified end-to-end with evidence.
+6. Add stronger controls only when the project has a real reason for them.
 
 The default stance is simple:
 
-- keep the main thread focused on direction, synthesis, and sign-off
-- delegate autonomy-ready work when that keeps the main context cleaner
+- keep the main thread on a capable model, focused on direction, synthesis, and sign-off
+- delegate autonomy-ready work to the cheapest tier that can do it reliably
 - require delegated work to return evidence, not just conclusions
 - use the lightest control system that still keeps the project resumable, reviewable, and safe
-- keep durable state in files, not only in conversation history
+- keep durable state in vendor-neutral files, not only in conversation history
 - prefer task queues over milestone-only plans
-- make assumptions explicit
+- assumptions may fill details inside an approved frame; structure changes go back through a checkpoint
 - use dates, budgets, approvals, and release controls only when they are real constraints
 
 ## How The Skill Works
@@ -83,12 +86,18 @@ The main skill file gives Claude Code:
 
 The bundled references let Claude Code stay lean by default and pull in detail only when the task requires it:
 
-- [`references/project-rulebook.md`](./references/project-rulebook.md): the full rule system and coverage map
+- [`references/file-templates.md`](./references/file-templates.md): the canonical `pm/` layout and templates — the cross-tool file contract
+- [`references/worked-example.md`](./references/worked-example.md): one compressed end-to-end example of checkpoints, routing, and acceptance
+- [`references/project-rulebook.md`](./references/project-rulebook.md): the audit and rescue rule system
 - [`references/external-constraints.md`](./references/external-constraints.md): deadlines, approvals, quotas, vendor dependencies, release safety
-- [`references/ai-agent-practices.md`](./references/ai-agent-practices.md): file-backed memory, handoffs, evals, subagents, guardrails
+- [`references/ai-agent-practices.md`](./references/ai-agent-practices.md): file-backed memory, handoffs, routing, evals, subagents, guardrails
 - [`references/source-anchors.md`](./references/source-anchors.md): provenance and source tracking for the rule set
 
 This gives you a full operating system for software delivery without forcing Claude Code to load the whole thing for every request.
+
+### 4. The `pm/` files are the cross-tool contract
+
+The project artifacts this skill maintains are deliberately vendor-neutral. A sibling edition of this skill exists for Codex (`software-project-management`); both editions read and write the same `pm/` layout, ID scheme, and routing tiers, so an operator can switch tools mid-project without conversion. Only the tier-to-model mapping differs per edition, and tasks record tiers, never model names.
 
 ## What Makes This Skill Different
 
@@ -125,8 +134,10 @@ software-project-management-for-claude/
 └── references/
     ├── ai-agent-practices.md
     ├── external-constraints.md
+    ├── file-templates.md
     ├── project-rulebook.md
-    └── source-anchors.md
+    ├── source-anchors.md
+    └── worked-example.md
 ```
 
 ## Installation
@@ -150,17 +161,20 @@ Once installed, Claude Code can use the skill when the request matches the skill
 ## Example Prompts
 
 - `Use software-project-management to rescue this drifting MVP project and rebuild the task queue.`
-- `Use software-project-management to turn this repo into a resumable solo-operator execution system.`
-- `Use software-project-management to break this feature roadmap into stable task IDs with acceptance checks.`
+- `Use software-project-management to run the CP1 elicitation and set up the pm/ files for this idea.`
+- `Use software-project-management to break this feature roadmap into stories and routed tasks with acceptance checks.`
+- `Use software-project-management to run final acceptance and verify every success criterion end-to-end.`
 - `Use software-project-management to prepare a safe release plan with rollback notes and monitoring checks.`
-- `Use software-project-management to set up multi-agent delivery rules, evals, and guardrails for this codebase.`
+- `Use software-project-management to set up multi-agent delivery rules, model routing, evals, and guardrails for this codebase.`
 
 ## Design Principles
 
 - Default to solo-operator control, not team ceremony.
+- The operator consciously approves the frame, the breakdown, the queue, and the final acceptance.
 - Prefer reviewable tasks over heroic long runs.
-- Keep the parent thread as a director, not a dump for noisy intermediate work.
-- Keep project truth in files.
+- Keep the parent thread as a director on a capable model; route execution to the cheapest reliable tier.
+- Keep project truth in vendor-neutral files that both skill editions can read and write.
+- Trace success criteria to stories, tasks, and evidence; done means re-verified end-to-end.
 - Separate stable delivery practices from volatile vendor advice.
 - Add complexity only when an actual constraint justifies it.
 

@@ -56,7 +56,7 @@ This document synthesizes recent practices for running software delivery with Cl
 - Current Claude guidance also reinforces layering short `CLAUDE.md` files close to the relevant code rather than growing one giant root file. [S16] [S22]
 
 ## Task Storage Outside the Context Window
-- Long-horizon tasks should have an explicit plan file, not only a chat history.
+- Long-horizon tasks should have an explicit plan file, not only a chat history. The canonical containers are `pm/TASKS.md` and `pm/STATE.md` as defined in [file-templates.md](./file-templates.md).
 - A good task file contains:
   - task ID
   - problem statement
@@ -133,23 +133,19 @@ This document synthesizes recent practices for running software delivery with Cl
   - unresolved questions
   - exact files to inspect next
   - whether the next session should edit, only review, or only research
+- The canonical home for this handoff is `pm/STATE.md`; the format is shared with the Codex edition of this skill, so a handoff written by one tool can be resumed by the other without conversion.
 
 ## Routing Work Efficiently
-- Route by task shape, not by habit.
-- Use lighter agent types for:
-  - repo search and localization (Explore subagent type)
-  - short summaries
-  - mechanical transformations
-  - narrow documentation edits
-  - first-pass triage
-- Use the main Claude Code session for:
-  - ambiguous debugging
-  - architecture changes
-  - cross-cutting refactors
-  - long-horizon execution
-  - unresolved tradeoffs
-- Claude Code supports model selection per agent (sonnet, opus, haiku) via the Agent tool. Route subagents to the lightest model that can handle the task. [S17] [S18]
-- Revalidate routing whenever task mix or cost constraints change. [S17] [S18]
+- Route by task shape, not by habit. Every task in `pm/TASKS.md` carries a vendor-neutral `Route:` tier assigned when it enters the queue:
+  - `light`: repo search and localization (Explore subagent type), short summaries, mechanical transformations, narrow documentation edits, formatting, log triage
+  - `standard`: bounded implementation, tests, moderate-complexity changes
+  - `heavy`: planning, decomposition, architecture, cross-cutting refactors, ambiguous debugging, review of risky work, final acceptance
+- Claude Code supports model selection per agent via the Agent tool `model` parameter; the current tier mapping (heavy=opus, standard=sonnet, light=haiku) lives in SKILL.md and should be revalidated as models and prices change. [S17] [S18]
+- Keep the main thread on a capable model in the director role: it plans, routes, judges evidence, and signs off; cheaper tiers execute.
+- Escalation ladder: after two failed attempts or a low-confidence result on the same task, escalate one tier and record it in the task entry. Do not stack corrections at the same tier.
+- Reviewer-tier floor: the reviewer must be at least the tier of the writer; risky or cross-cutting diffs get a fresh-context heavy review; a light-tier agent never self-approves its own work.
+- Keep model names out of `pm/` files. Tiers stay valid when the operator switches between Claude Code and Codex; only the mapping table changes.
+- Revalidate routing whenever task mix, model snapshots, or cost constraints change. [S17] [S18]
 
 ## Including Tests and Evals in Tasks
 - Every nontrivial task should define how correctness will be checked before the agent starts.
